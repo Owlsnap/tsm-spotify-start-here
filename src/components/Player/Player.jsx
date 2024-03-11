@@ -1,5 +1,6 @@
 import { Box, Grid, Typography, Avatar } from '@mui/material';
 import { useEffect, useState } from 'react';
+import PlayerControls from '../PlayerControls/PlayerControls';
 
 const Player = ({ spotifyApi, token }) => {
 	const [localPlayer, setLocalPlayer] = useState();
@@ -8,6 +9,7 @@ const Player = ({ spotifyApi, token }) => {
 	const [device, setDevice] = useState();
 	const [duration, setDuration] = useState();
 	const [progress, setProgress] = useState();
+	const [active, setActive] = useState();
 
 	useEffect(() => {
 		const script = document.createElement('script');
@@ -18,7 +20,7 @@ const Player = ({ spotifyApi, token }) => {
 
 		window.onSpotifyWebPlaybackSDKReady = () => {
 			const player = new window.Spotify.Player({
-				name: 'Big Lex Player',
+				name: 'Alex SpotPlayer2',
 				getOAuthToken: (cb) => {
 					cb(token);
 				},
@@ -39,44 +41,46 @@ const Player = ({ spotifyApi, token }) => {
 				if (!state || !state.track_window?.current_track) {
 					return;
 				}
-                // console.log(state);
+				// console.log(state);
 
-                const duration = state.track_window.current_track.duration_ms / 1000;
-                const progress = state.position / 1000;
-                setDuration(duration);
-                setProgress(progress);
-                setIsPaused(state.paused);
-                setCurrentTrack(state.track_window.current_track);
+				const duration = state.track_window.current_track.duration_ms / 1000;
+				const progress = state.position / 1000;
+				setDuration(duration);
+				setProgress(progress);
+				setIsPaused(state.paused);
+				setCurrentTrack(state.track_window.current_track);
+
+				player.getCurrentState().then( state => { 
+					(!state)? setActive(false) : setActive(true) 
+				});
 			});
 
 			player.connect();
 		};
 	}, []);
 
-    useEffect(() => {
-        if (!localPlayer) return;
-        async function connect() {
-            await localPlayer.connect();
-        }
+	useEffect(() => {
+		if (!localPlayer) return;
+		async function connect() {
+			await localPlayer.connect();
+		}
 
-        connect();
-        return() => {
-            localPlayer.disconnect();
-        }
+		connect();
+		return () => {
+			localPlayer.disconnect();
+		};
+	}, [localPlayer]);
 
-    }, [localPlayer]);
+	// useEffect(() => {
+	// 	const transferPlayback = async () => {
+	// 		if (device) {
+	// 			const res = await spotifyApi.getMyDevices();
+	// 			await spotifyApi.transferMyPlayback([device], false);
+	// 		}
+	// 	};
 
-    useEffect(() => {
-        const transferPlayback = async () => {
-            if (device) {
-                const res = await spotifyApi.getMyDevices();
-                // console.log(res);
-                await spotifyApi.transferMyPlayback([device], false);
-            }
-        };
-
-        transferPlayback();
-    }, [device, spotifyApi]);
+	// 	transferPlayback();
+	// }, [device, spotifyApi]);
 
 	return (
 		<Box>
@@ -92,11 +96,12 @@ const Player = ({ spotifyApi, token }) => {
 				}}
 			>
 				<Grid xs={12} md={4} item sx={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
-					<Avatar 
-                    src={current_track?.album.images[0].url} 
-                    alt={current_track?.album.name} 
-                    variant="square" 
-                    sx={{ width: 56, height: 56, marginRight: 2 }} />
+					<Avatar
+						src={current_track?.album.images[0].url}
+						alt={current_track?.album.name}
+						variant="square"
+						sx={{ width: 56, height: 56, marginRight: 2 }}
+					/>
 					<Box>
 						<Typography variant="h6" sx={{ color: 'text.primary', fontSize: 14 }}>
 							{current_track?.name}
@@ -115,7 +120,18 @@ const Player = ({ spotifyApi, token }) => {
 					md={4}
 					item
 				>
-					Play button
+					{active ? (
+						<PlayerControls 
+						progress={progress} 
+						isPaused={isPaused} 
+						duration={duration} 
+						player={localPlayer} />
+					) : (
+						<Typography variant="subtitle1" sx={{ color: 'text.secondary', fontSize: 12 }}>
+							No active device
+						</Typography>
+					)}
+					
 				</Grid>
 				<Grid
 					xs={6}
