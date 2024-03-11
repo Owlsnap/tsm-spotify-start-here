@@ -6,6 +6,7 @@ import { getAccessTokenFromStorage } from '../utils/getAccessTokenFromStorage';
 import { useEffect, useState } from 'react';
 import Playlist from '../pages/Playlist';
 import Player from './Player/Player';
+import MobileNav from './MobileNav/MobileNav';
 
 const Dashboard = ({ spotifyApi }) => {
 	const token = useState(getAccessTokenFromStorage());
@@ -31,6 +32,7 @@ const Dashboard = ({ spotifyApi }) => {
 				</Routes>
 			</Box>
 			{ token && <Player spotifyApi={spotifyApi} token={token} />}
+			<MobileNav />
 		</Box>
 	);
 };

@@ -35,7 +35,7 @@ const SideNav = ({ spotifyApi, token }) => {
 				backgroundColor: 'background.default',
 				width: 230,
 				height: '100%',
-				display: 'flex',
+				display: { xs: 'none', md: 'flex' },
 				flexDirection: 'column'
 			}}
 		>
