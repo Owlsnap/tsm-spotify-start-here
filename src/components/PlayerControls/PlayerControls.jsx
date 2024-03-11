@@ -78,7 +78,6 @@ const playerControls = ({ player, isPaused, progress, duration }) => {
 					size="medium"
 					sx={{ color: 'primary.main' }}
 					onChange={(event, value) => {
-						console.log('changed', value);
 						setCurrentProgress(value);
 					}}
 					onChangeCommitted={(event, value) => {

@@ -1,6 +1,7 @@
 import { Box, Grid, Typography, Avatar } from '@mui/material';
 import { useEffect, useState } from 'react';
 import PlayerControls from '../PlayerControls/PlayerControls';
+import PlayerVolume from '../PlayerVolume/PlayerVolume';
 
 const Player = ({ spotifyApi, token }) => {
 	const [localPlayer, setLocalPlayer] = useState();
@@ -41,7 +42,6 @@ const Player = ({ spotifyApi, token }) => {
 				if (!state || !state.track_window?.current_track) {
 					return;
 				}
-				// console.log(state);
 
 				const duration = state.track_window.current_track.duration_ms / 1000;
 				const progress = state.position / 1000;
@@ -143,7 +143,7 @@ const Player = ({ spotifyApi, token }) => {
 						justifyContent: 'flex-end'
 					}}
 				>
-					Volume
+					<PlayerVolume player={localPlayer}/>
 				</Grid>
 			</Grid>
 		</Box>
