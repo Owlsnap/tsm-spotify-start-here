@@ -3,18 +3,18 @@ import { formatTime } from '../../utils/formatTime';
 import { PlayArrow, Pause, SkipNext, SkipPrevious } from '@mui/icons-material';
 import { useState, useEffect } from 'react';
 
-const playerControls = ({ player, isPaused, progress, duration }) => {
+const PlayerControls = ({ player, isPaused, progress, duration }) => {
 	const [currentProgress, setCurrentProgress] = useState(progress);
 	const skipStyle = { width: 28, height: 28 };
 	const playStyle = { width: 38, height: 38 };
 
 	useEffect(() => {
-		const intervalId = setInterval(() => {
-            if (!isPaused && player) {
-                setCurrentProgress((prev) => prev + 1);
-            }
-        }, 1000);
-		return () => clearInterval(intervalId);
+		const interval = setInterval(() => {
+			if (!isPaused && player) {
+				setCurrentProgress((c) => c + 1);
+			}
+		}, 1000);
+		return () => clearInterval(interval);
 	}, [isPaused, player]);
 
 	useEffect(() => {
@@ -71,16 +71,15 @@ const playerControls = ({ player, isPaused, progress, duration }) => {
 					{formatTime(currentProgress)}
 				</Typography>
 				<Slider
-					aria-label="progress"
 					value={currentProgress}
 					max={duration}
 					min={0}
 					size="medium"
 					sx={{ color: 'primary.main' }}
-					onChange={(event, value) => {
+					onChange={(_, value) => {
 						setCurrentProgress(value);
 					}}
-					onChangeCommitted={(event, value) => {
+					onChangeCommitted={(e, value) => {
 						player.seek(value * 1000);
 					}}
 				/>
@@ -92,4 +91,4 @@ const playerControls = ({ player, isPaused, progress, duration }) => {
 	);
 };
 
-export default playerControls;
+export default PlayerControls;
