@@ -19,7 +19,7 @@ const Home = () => {
 				style={{ maxwidth: '50%', maxHeight: '50%', width: 300, height: 400 }}
 			/>
 			<Button variant="contained" size="medium" href="tel:0704375199">
-				<p>Kontakta mig!</p>
+				<p>Login to your spotify premium account to autorize before connecting</p>
 				<PhoneIcon sx={{ fontSize: 16, marginLeft: 1 }} />
 			</Button>
 		</Box>
